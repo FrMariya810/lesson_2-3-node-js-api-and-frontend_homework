@@ -1,38 +1,40 @@
-# Equipment desk homework 2–3
+# ДЗ 2–3: пункт выдачи оборудования
 
-A standalone starter for second-year DRIP students.
-Goal: build API operations that respect the available stock, connect them to the UI,
-and check persistence and failures.
+Самостоятельный стартовый проект для студентов второго курса ДРИП.
+Цель — реализовать операции API с учётом доступного остатка, связать их с интерфейсом
+и проверить сохранение данных и обработку отказов.
 
-Start with the Russian [assignment](assignment.md).
-Use the [acceptance scenarios](acceptance.md) to check your result.
-The PR form is in [.github/pull_request_template.md](.github/pull_request_template.md).
+Начните с [условия задания](assignment.md).
+Проверьте результат по [сценариям самопроверки](acceptance.md).
+Для сдачи используйте [шаблон описания PR](.github/pull_request_template.md).
 
-Use Node.js 22.18+ and npm 10+. Run commands in this folder:
+Нужны Node.js 22.18+ и npm 10+. Выполняйте команды в этой папке:
 
 ```bash
 npm ci
 npm run dev:api
 ```
 
-Keep the API running. In a second terminal, in this folder:
+Оставьте API работающим. Во втором терминале, в той же папке:
 
 ```bash
 npm run dev
 ```
 
-Open http://127.0.0.1:5173. The initial journal shows Alina and Boris.
-GET and file storage work. Issue and return actions are unfinished;
-the assignment lists these boundaries.
+Откройте http://127.0.0.1:5173. В исходном журнале — записи Алины и Бориса.
+Получение журнала через GET и файловое хранение уже работают.
+Выдачу и возврат нужно реализовать; границы готовой части описаны в задании.
+
+Проверка типов, сборка и запуск собранного приложения:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-Preview uses http://127.0.0.1:4173 and also needs the API.
-This folder is the root of a separate homework repository.
-It does not import files from practice or from other homework projects.
-Completed practice is required for submission, not for running this starter.
+Собранное приложение доступно по адресу http://127.0.0.1:4173; ему тоже нужен работающий API.
+Эта папка — корень отдельного репозитория ДЗ.
+Проект не импортирует файлы из практики или других домашних заданий.
+Завершённая практика обязательна для сдачи ДЗ; для запуска этого проекта она не требуется.
 
-[Project structure](docs/project.md) · [Minimal npm setup](npm-setup.md) · [Help rules](AGENTS.md)
+[Устройство проекта](docs/project.md) · [Минимальная настройка npm](npm-setup.md) · [Правила помощи](AGENTS.md)

@@ -7,7 +7,7 @@ export async function request<T>(path: string, options?: RequestInit): Promise<T
   catch { throw new Error('Нет связи с сервером. Проверьте API и повторите действие вручную.') }
   const text = await response.text()
   let body: { data?: T; error?: { message?: string } } | null = null
-  try { body = JSON.parse(text) } catch { /* Proxy может вернуть не JSON. */ }
+  try { body = JSON.parse(text) } catch { /* Прокси-сервер может вернуть ответ не в формате JSON. */ }
   if (!response.ok) throw new Error(body?.error?.message ?? 'HTTP ' + response.status + '. Проверьте терминал API.')
   if (body === null || typeof body !== 'object' || !('data' in body)) throw new Error('Неожиданный ответ API.')
   return body.data as T
