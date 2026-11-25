@@ -1,0 +1,26 @@
+{
+  "name": "equipment-desk-homework",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18.0",
+    "npm": ">=10"
+  },
+  "scripts": {
+    "dev:api": "node server/index.ts",
+    "dev": "node node_modules/vite/bin/vite.js",
+    "typecheck": "node node_modules/typescript/bin/tsc -p tsconfig.json && node node_modules/typescript/bin/tsc -p tsconfig.server.json",
+    "build": "npm run typecheck && node node_modules/vite/bin/vite.js build",
+    "preview": "node node_modules/vite/bin/vite.js preview",
+    "data:reset": "node scripts/reset-data.ts",
+    "demo:fail-next": "node scripts/fail-next.ts",
+    "demo:clear": "node scripts/fail-next.ts --clear"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "typescript": "6.0.3",
+    "vite": "8.3.1"
+  }
+}
+

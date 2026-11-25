@@ -1,0 +1,14 @@
+[
+  {
+    "id": "l1",
+    "borrower": "Алина",
+    "quantity": 2,
+    "status": "active"
+  },
+  {
+    "id": "l2",
+    "borrower": "Борис",
+    "quantity": 1,
+    "status": "returned"
+  }
+]
