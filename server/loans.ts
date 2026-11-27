@@ -6,7 +6,31 @@ import { randomUUID } from 'node:crypto'
 
 // Чтение уже работает. Параметры URL понадобятся только для бонуса Д1.
 export async function listLoans(_url: URL): Promise<Snapshot> {
-  return { stock: STOCK, loans: await store.list() }
+  const statuses = _url.searchParams.getAll('status')
+
+  if (statuses.length > 1) {
+    throw new HttpError(400, 'INVALID_FILTER', 'Можно указать только один статус.')
+  }
+
+  const status = statuses[0]
+
+  if (
+    status !== undefined &&
+    status !== 'all' &&
+    status !== 'active' &&
+    status !== 'returned'
+  ) {
+    throw new HttpError(400, 'INVALID_FILTER', 'Неизвестный статус фильтрации.')
+  }
+
+  const loans = await store.list()
+
+  return {
+    stock: STOCK,
+    loans: status === undefined || status === 'all'
+      ? loans
+      : loans.filter(loan => loan.status === status)
+  }
 }
 
 // А1: проверка выдачи и доступного остатка.
