@@ -1,6 +1,6 @@
 import './style.css'
 import type { Snapshot } from '../shared/loan.ts'
-import { getSnapshot } from './api.ts'
+import { getSnapshot, issue, takeBack } from './api.ts'
 import { renderLedger } from './ledger.ts'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
@@ -48,8 +48,14 @@ function render() {
   document.querySelector('#stock')!.textContent = snapshot ? String(snapshot.stock) : '—'
   renderLedger(ledger, snapshot?.loans ?? [], busy, id => { if (!busy) void submitReturn(id) })
   // А3: два показателя ещё не связаны с журналом. Правило расчёта — в условии.
-  document.querySelector('#issued')!.textContent = '—'
-  document.querySelector('#available')!.textContent = '—'
+  const issued = snapshot?.loans.reduce(
+    (sum, loan) => loan.status === 'active' ? sum + loan.quantity : sum,
+    0
+  )
+
+  document.querySelector('#issued')!.textContent = issued === undefined ? '—' : String(issued)
+
+  document.querySelector('#available')!.textContent = snapshot === null ? '—' : String(snapshot.stock - issued!)
 }
 function setBusy(value: boolean) { busy = value; render() }
 
@@ -76,10 +82,71 @@ reload.addEventListener('click', () => { void load() })
 
 // А3–А4: обработчики выдачи и возврата пока не подключены к API.
 async function submitIssue() {
-  show('Выдача ещё не подключена. Условия работы описаны в задании.', true)
+  const current = snapshot
+
+  if (busy || current === null) return
+
+  const data = new FormData(form)
+
+  const borrower = String(data.get('borrower') ?? '')
+  const quantity = Number(data.get('quantity'))
+
+  setBusy(true)
+  show('Оформление выдачи…')
+
+  try {
+    const loan = await issue({ borrower, quantity })
+
+    snapshot = {
+      ...current,
+      loans: [...current.loans, loan]
+    }
+
+    form.reset()
+    note.textContent = ''
+
+    show('Выдача оформлена.')
+  } catch (error) {
+    show(
+      error instanceof Error
+        ? error.message
+        : 'Не удалось оформить выдачу.',
+      true
+    )
+  } finally {
+    setBusy(false)
+  }
 }
 async function submitReturn(_id: string) {
-  show('Возврат ещё не подключён. Условия работы описаны в задании.', true)
+  const current = snapshot
+
+  if (busy || current === null) return
+
+  setBusy(true)
+  show('Оформление возврата…')
+
+  try {
+    const loan = await takeBack(_id)
+
+    snapshot = {
+      ...current,
+      loans: current.loans.map(item =>
+        item.id === loan.id ? loan : item
+      )
+    }
+
+    note.textContent = ''
+    show('Возврат принят.')
+  } catch (error) {
+    show(
+      error instanceof Error
+        ? error.message
+        : 'Не удалось оформить возврат.',
+      true
+    )
+  } finally {
+    setBusy(false)
+  }
 }
 void load()
 
