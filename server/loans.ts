@@ -58,6 +58,28 @@ export async function createLoan(_body: unknown): Promise<Loan> {
 
 // А2: возврат оборудования и повторный запрос.
 export async function returnLoan(_id: string, _body: unknown): Promise<Loan> {
-  throw new HttpError(501, 'NOT_IMPLEMENTED', 'Возврат пока не реализован.')
+  if (typeof _body !== 'object' || _body === null || Array.isArray(_body)) {
+    throw new HttpError(400, 'INVALID_RETURN', 'Некорректные данные возврата.')
+  }
+
+  const input = _body as Record<string, unknown>
+
+  if (input.status !== 'returned') {
+    throw new HttpError(400, 'INVALID_RETURN', 'Статус возврата должен быть returned.')
+  }
+
+  return store.edit(draft => {
+    const loan = draft.find(item => item.id === _id)
+
+    if (!loan) {
+      throw new HttpError(404, 'NOT_FOUND', 'Выдача не найдена.')
+    }
+
+    if (loan.status === 'active') {
+      loan.status = 'returned'
+    }
+
+    return loan
+  })
 }
 
